@@ -1,0 +1,94 @@
+  // déclaration des objets
+Camera camera ;
+PShape testShape;
+PShape goatShape;
+PShape podiumShape;
+PShape groundShape ; 
+PImage textureGoat;
+PImage textureSnow;
+PVector v1 ;
+float rotatY=0 ; // pour tourner le chèvre sur axe y (c'est pas demandé)
+boolean discoMode = false; // Variable pour le mode disco
+float angle = 0; // Angle pour faire tourner les spots autour de l'axe y
+
+void setup() {
+  size(700, 600, P3D);
+  smooth(3);
+  camera = new Camera (this) ;
+  v1 = new PVector(0, -3, 10);
+  camera.setPosition(v1);
+  goatShape = loadShape("goat.obj");
+  podiumShape = loadShape("podium.obj");
+  groundShape = loadShape("ground.obj");
+  testShape = loadShape("test.obj");
+  // Chargez la texture
+  textureGoat = loadImage("goat_texture.png");
+  textureSnow = loadImage("snow_texture.png");
+  // Appliquez les textures à les objets
+  goatShape.setTexture(textureGoat);
+  podiumShape.setTexture(textureSnow);
+  groundShape.setTexture(textureSnow);
+}
+
+void draw() {
+  background(0);
+  // Crée un cercle de spots lumineux
+    
+   if(discoMode) {
+     // Augmente l'angle de rotation pour faire tourner les spots
+    angle += radians(10); // Augmentez la vitesse de rotation en modifiant l'angle ici
+    
+    spotLight(255, 0, 0, 20, 20,20 , 0, 0, 0, PI/4, -400);
+    // Crée six spots lumineux avec des couleurs différentes en les faisant tourner autour de l'axe y
+    //// Rouge
+    //spotLight(255, 0, 0, 20 * cos(angle), 20 * sin(angle), 0, 0, -20, 0, PI/4, -400);
+    //// Vert
+    //spotLight(0, 255, 0, 20 * cos(angle + PI/3), 20 * sin(angle + PI/3), 0, 0, -20, 0, PI/4, -400);
+    //// Bleu
+    //spotLight(0, 0, 255, 20 * cos(angle + 2*PI/3), 20 * sin(angle + 2*PI/3), 0, 0, -20, 0, PI/4,-400);
+    //// Jaune
+    //spotLight(255, 255, 0, 20 * cos(angle + PI), 20 * sin(angle + PI), 0, 0, -20, 0, PI/4, -400);
+    //// Magenta
+    //spotLight(255, 0, 255, 20 * cos(angle + 4*PI/3), 20 * sin(angle + 4*PI/3), 0, 0, -20, 0, PI/4,-400);
+    //// Cyan
+    //spotLight(0, 255, 255, 20 * cos(angle + 5*PI/3), 20 * sin(angle + 5*PI/3), 0, 0, -20, 0, PI/4,-400);
+     
+   }else{
+      // Mode normal : Ajoutez une lumière ambiante
+      ambientLight(50, 50, 50);
+      // Ajoutez une lumière directionnelle
+      directionalLight(255, 255, 255, -2, 3, -2);
+   }
+  
+  //// Afficher le sol
+  pushMatrix();
+  scale(30); // Homothétie de facteur 30 pour le sol
+  shape(groundShape);
+  popMatrix();
+  // pushMatrix() et popMatrix() pour isoler la translation et l'affichage du sol afin de ne pas affecter la chèvre ou le podium
+ 
+  //// podium
+  //shape(podiumShape,0,0);
+  //rotate(radians(180)); // Rotation de 180 degrés pour remettre l'objet dans le bon sens
+  //translate(0, 1.2, 0);
+  ////chèvre
+  //scale(2); // Homothétie de facteur 2
+  //rotateY(rotatY);
+  //// si vous voulez faire tourner la chèvre sur axe y
+  //rotatY+=0.05;
+  //shape(goatShape,0,0); // Affichez l'objet PShape à l'écran
+  
+  spotLight(255, 0, 0, 3, -5,0 , 0, 0, 0, PI/4, -400);
+  pushMatrix();
+  scale(5); // Homothétie de facteur 30 pour le sol
+  shape(testShape,0,0);
+  popMatrix();
+
+}
+
+void keyPressed() {
+  if (key == 'm' || key == 'M') {
+    // Basculez le mode disco
+    discoMode = !discoMode;
+  }
+}
